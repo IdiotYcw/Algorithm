@@ -1,2 +1,0 @@
-# Algorithm
-Some practical algorithm
