@@ -2,7 +2,7 @@
 from tensorflow.examples.tutorials.mnist import input_data
 import tensorflow as tf
 
-minist = input_data.read_data_sets('./MINIST', one_hot=True)
+minist = input_data.read_data_sets('../materials/MINIST', one_hot=True)
 
 x = tf.placeholder(tf.float32, [None, 784])
 w = tf.Variable(tf.zeros([784, 10]))
