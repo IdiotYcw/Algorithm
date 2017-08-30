@@ -3,7 +3,8 @@
 
 'KMP string search algorithm'
 
-__author__ = "XNY"
+__author__ = "aforwardz"
+
 
 def GetNext(string):
     length = len(string)
@@ -21,6 +22,7 @@ def GetNext(string):
 
     return next
 
+
 def KMP_Search(original, find):
     original_length = len(original)
     find_length = len(find)
@@ -32,6 +34,6 @@ def KMP_Search(original, find):
         if original[i] == find[j]:
             j += 1
         if j == find_length:
-            print "Find at position: ", i - j + 1
-            print original[i - j + 1: i + 1]
+            print("Find at position: ", i - j + 1)
+            print(original[i - j + 1: i + 1])
             j = next[j]
