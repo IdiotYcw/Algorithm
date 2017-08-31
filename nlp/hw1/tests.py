@@ -1,5 +1,6 @@
 import unittest
-from limerick import LimerickDetector
+from nlp.hw1.limerick import LimerickDetector
+
 
 class TestSequenceFunctions(unittest.TestCase):
 
@@ -39,8 +40,8 @@ class TestSequenceFunctions(unittest.TestCase):
         try: self.assertEqual(self.ld.rhymes("cup", "duck"), False)
         except: s.append(15)
 
-        print '\nNumber of failed rhyme tests:', str(len(s))
-        if len(s)!=0: print 'Failed rhyme tests:', ','.join([str(x) for x in s])
+        print('\nNumber of failed rhyme tests:', str(len(s)))
+        if len(s)!=0: print('Failed rhyme tests:', ','.join([str(x) for x in s]))
 
     def test_syllables(self):
         s = []
@@ -67,8 +68,8 @@ class TestSequenceFunctions(unittest.TestCase):
         try: self.assertEqual(self.ld.num_syllables("reluctant"), 3)
         except: s.append(11)
 
-        print '\nNumber of failed syllables tests:', str(len(s))
-        if len(s)!=0: print 'Failed syllables tests:', ','.join([str(x) for x in s])
+        print('\nNumber of failed syllables tests:', str(len(s)))
+        if len(s)!=0: print('Failed syllables tests:', ','.join([str(x) for x in s]))
 
     def test_examples(self):
 
@@ -135,8 +136,8 @@ Front page, sporting section and all."""
         try: self.assertEqual(self.ld.is_limerick(g), True)
         except: s.append('g')
 
-        print 'Number of failed limerick tests:', str(len(s))
-        if len(s)!=0: print 'Failed limerick tests:', ','.join(s)
+        print('Number of failed limerick tests:', str(len(s)))
+        if len(s)!=0: print('Failed limerick tests:', ','.join(s))
 
 if __name__ == '__main__':
     unittest.main()

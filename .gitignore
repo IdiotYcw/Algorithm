@@ -1,4 +1,5 @@
 *.ipynb
 .idea/
+__pycache__/
 *.txt
-.DS_Store/
+.DS_Store
