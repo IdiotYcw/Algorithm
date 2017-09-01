@@ -1,5 +1,5 @@
 import unittest
-from nlp.hw1.limerick import LimerickDetector
+from nlp.hw1.limerick3 import LimerickDetector
 
 
 class TestSequenceFunctions(unittest.TestCase):

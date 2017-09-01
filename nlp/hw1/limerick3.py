@@ -65,8 +65,9 @@ class LimerickDetector:
         """
 
         # TODO: provide an implementation!
-        pronounce_2_list = self._pronunciations.get(word.lower(), [[]])
-        shorter_pronounce = min(pronounce_2_list, key=len)
+        word = word.strip().strip(',').strip('.').lower()
+        print(word)
+        shorter_pronounce = min(self._pronunciations.get(word, [[]]), key=len)
 
         # len(list(filter(lambda p: p[-1].isdigit(), short_pronounce)))
         return list(map(lambda p: p[-1].isdigit(), shorter_pronounce)).count(True) \
@@ -79,6 +80,29 @@ class LimerickDetector:
         """
 
         # TODO: provide an implementation!
+        def sounds_after_first_consonant(sound_list):
+            for index, sound in enumerate(sound_list):
+                if not sound[-1].isdigit():
+                    print('after consonant', ''.join(sound_list[index+1:]))
+                    return ''.join(sound_list[index+1:])
+            print('no consonant', ''.join(sound_list))
+            return ''.join(sound_list)
+
+        for a_sound_list in self._pronunciations.get(a, [[]]):
+            for b_sound_list in self._pronunciations.get(b, [[]]):
+                if not a_sound_list or not b_sound_list:
+                    return False
+
+                print(a_sound_list, b_sound_list)
+                if len(a_sound_list) == len(b_sound_list) and \
+                        sounds_after_first_consonant(a_sound_list) == sounds_after_first_consonant(b_sound_list):
+                    return True
+                if len(a_sound_list) < len(b_sound_list) and \
+                        ''.join(b_sound_list).endswith(sounds_after_first_consonant(a_sound_list)):
+                    return True
+                if len(a_sound_list) > len(b_sound_list) and \
+                        ''.join(a_sound_list).endswith(sounds_after_first_consonant(b_sound_list)):
+                    return True
 
         return False
 
@@ -104,7 +128,57 @@ class LimerickDetector:
 
         """
         # TODO: provide an implementation!
-        return False
+        lines = text.split('\n')
+        lines = list(map(lambda l: l.strip(' ').strip(',').strip('.'), lines))
+        print(lines)
+        if len(lines) != 5:
+            return False
+
+        # A_lines = [lines[0], lines[1], lines[3]]
+        # B_lines = [lines[2], lines[4]]
+
+        def lines_rhymes(line1, line2):
+            return self.rhymes(line1.split(' ')[-1], line2.split(' ')[-1])
+
+        # line1 rhymes line2, line2 rhymes line3 !-> line1 rhymes line3
+        if not all([
+            lines_rhymes(lines[0], lines[1]),
+            lines_rhymes(lines[0], lines[4]),
+            lines_rhymes(lines[1], lines[4]),
+            lines_rhymes(lines[2], lines[3]),
+        ]):
+            return False
+
+        if any([
+            lines_rhymes(lines[0], lines[2]),
+            lines_rhymes(lines[0], lines[3]),
+            lines_rhymes(lines[1], lines[2]),
+            lines_rhymes(lines[1], lines[3]),
+            lines_rhymes(lines[4], lines[2]),
+            lines_rhymes(lines[4], lines[3]),
+        ]):
+            return False
+
+        # additional
+        lines_num_syllables = []
+        for index, line in enumerate(lines):
+            print('\nline %s :' %index)
+            lines_num_syllables.append(
+                sum(list(map(self.num_syllables, line.strip().split(' '))))
+            )
+        print('lines_num_syllables', lines_num_syllables)
+
+        with lines_num_syllables as lns:
+            if min(lns) < 4:
+                return False
+            if max(lns[2], lns[4]) >= min(lns[0], lns[1], lns[3]):
+                return False
+            if max(lns[0], lns[1], lns[3]) - min(lns[0], lns[1], lns[3]) > 2:
+                return False
+            if max(lns[2], lns[4]) - min(lns[2], lns[4]) > 2:
+                return False
+
+        return True
 
 
 # The code below should not need to be modified
