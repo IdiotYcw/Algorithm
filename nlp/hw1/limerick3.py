@@ -57,6 +57,27 @@ class LimerickDetector:
         """
         self._pronunciations = nltk.corpus.cmudict.dict()
 
+    def apostrophe_tokenize(self, text):
+        """
+        for python 3
+        :param text:
+        :return:
+        """
+        table = str.maketrans({k: None for k in punctuation.replace("'", "")})
+        text = text.translate(table)
+        lines = text.strip().split('\n')
+        lines = list(map(lambda l: l.strip(), lines))
+        lines = list(filter(lambda x: len(x) > 0, lines))
+
+        return lines
+
+    def guess_syllables(self, word):
+        """
+        not reasonable at all o_O
+        """
+        vowel = 'aeiou'
+        return sum(word.count(c) for c in vowel)
+
     def num_syllables(self, word):
         """
         Returns the number of syllables in a word.  If there's more than one
@@ -64,9 +85,7 @@ class LimerickDetector:
         dictionary, return 1.
         """
 
-        # TODO: provide an implementation!
-        word = word.strip().strip(',').strip('.').lower()
-        print(word)
+        word = word.strip().lower()
         shorter_pronounce = min(self._pronunciations.get(word, [[]]), key=len)
 
         # len(list(filter(lambda p: p[-1].isdigit(), short_pronounce)))
@@ -79,13 +98,10 @@ class LimerickDetector:
         False otherwise.
         """
 
-        # TODO: provide an implementation!
         def sounds_after_first_consonant(sound_list):
             for index, sound in enumerate(sound_list):
-                if not sound[-1].isdigit():
-                    print('after consonant', ''.join(sound_list[index+1:]))
+                if not sound[-1].isdigit() and index != len(sound_list) - 1:
                     return ''.join(sound_list[index+1:])
-            print('no consonant', ''.join(sound_list))
             return ''.join(sound_list)
 
         for a_sound_list in self._pronunciations.get(a, [[]]):
@@ -93,7 +109,6 @@ class LimerickDetector:
                 if not a_sound_list or not b_sound_list:
                     return False
 
-                print(a_sound_list, b_sound_list)
                 if len(a_sound_list) == len(b_sound_list) and \
                         sounds_after_first_consonant(a_sound_list) == sounds_after_first_consonant(b_sound_list):
                     return True
@@ -127,15 +142,10 @@ class LimerickDetector:
 
 
         """
-        # TODO: provide an implementation!
-        lines = text.split('\n')
-        lines = list(map(lambda l: l.strip(' ').strip(',').strip('.'), lines))
-        print(lines)
+
+        lines = self.apostrophe_tokenize(text)
         if len(lines) != 5:
             return False
-
-        # A_lines = [lines[0], lines[1], lines[3]]
-        # B_lines = [lines[2], lines[4]]
 
         def lines_rhymes(line1, line2):
             return self.rhymes(line1.split(' ')[-1], line2.split(' ')[-1])
@@ -162,21 +172,21 @@ class LimerickDetector:
         # additional
         lines_num_syllables = []
         for index, line in enumerate(lines):
-            print('\nline %s :' %index)
+            word_list = line.strip().split(' ')
+            word_list = list(filter(lambda x: len(x) > 0, word_list))
             lines_num_syllables.append(
-                sum(list(map(self.num_syllables, line.strip().split(' '))))
+                sum(list(map(self.num_syllables, word_list)))
             )
-        print('lines_num_syllables', lines_num_syllables)
 
-        with lines_num_syllables as lns:
-            if min(lns) < 4:
-                return False
-            if max(lns[2], lns[4]) >= min(lns[0], lns[1], lns[3]):
-                return False
-            if max(lns[0], lns[1], lns[3]) - min(lns[0], lns[1], lns[3]) > 2:
-                return False
-            if max(lns[2], lns[4]) - min(lns[2], lns[4]) > 2:
-                return False
+        lns = lines_num_syllables
+        if min(lns) < 4:
+            return False
+        if max(lns[2], lns[3]) >= min(lns[0], lns[1], lns[4]):
+            return False
+        if max(lns[0], lns[1], lns[4]) - min(lns[0], lns[1], lns[4]) > 2:
+            return False
+        if max(lns[2], lns[3]) - min(lns[2], lns[3]) > 2:
+            return False
 
         return True
 
