@@ -1,2 +1,2 @@
-# PracticalAlgorithm
+# Algorithm
 Some practical algorithm
