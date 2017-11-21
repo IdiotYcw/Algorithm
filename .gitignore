@@ -4,3 +4,5 @@ __pycache__/
 *.txt
 *.DS_Store
 *.py[ocd]
+
+record_test.py
