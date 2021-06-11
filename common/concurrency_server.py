@@ -25,7 +25,7 @@ while True:
         # Receive the data in small chunks and retransmit it
         while count < 1000000:
             print('SEND COUNT %s' % count)
-            connection.send(bytes(
+            connection.sendall(bytes(
                 ('600093,牛逼,T111,13:54:07.110,43983364,633373968.00,14.690,14.000,15.500,13.580,13.650,0.000,13.650,1300,13.670,200,%s\n' % count).encode()))
             count += 1
             time.sleep(0.01)
